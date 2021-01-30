@@ -22,6 +22,7 @@ module.exports = class __PLUGIN_NAME__ {
     settings = {
         checkPluginUpdate: !!BdApi.getData(this.getPluginName(), "checkPluginUpdate"),
         incognitoEnable: !!BdApi.getData(this.getPluginName(), "incognitoEnable"),
+        incognitoInvert: !!BdApi.getData(this.getPluginName(), "incognitoInvert"),
         incognitoChrome: !!BdApi.getData(this.getPluginName(), "incognitoChrome"),
         incognitoEdge: !!BdApi.getData(this.getPluginName(), "incognitoEdge"),
         incognitoFirefox: !!BdApi.getData(this.getPluginName(), "incognitoFirefox"),
@@ -82,6 +83,9 @@ module.exports = class __PLUGIN_NAME__ {
         const incognitoEnable = new ZLibrary.Settings.Switch("Enable", "Shift+Click to ignore", this.settings.incognitoEnable, (e) => {
             this.settings.incognitoEnable = e;
         });
+        const incognitoInvert = new ZLibrary.Settings.Switch("Invert", "Shift+Click to open in incognito mode", this.settings.incognitoInvert, (e) => {
+            this.settings.incognitoInvert = e;
+        });
         const incognitoChrome = new ZLibrary.Settings.Switch("Chrome", null, this.settings.incognitoChrome, (e) => {
             this.settings.incognitoChrome = e;
         });
@@ -92,6 +96,7 @@ module.exports = class __PLUGIN_NAME__ {
             this.settings.incognitoFirefox = e;
         });
         incognitoSettings.append(incognitoEnable);
+        incognitoSettings.append(incognitoInvert);
         incognitoSettings.append(incognitoChrome);
         incognitoSettings.append(incognitoEdge);
         incognitoSettings.append(incognitoFirefox);
@@ -171,7 +176,7 @@ module.exports = class __PLUGIN_NAME__ {
      */
     onClickEvent(e) {
         if (e.target.nodeName == "A") {
-            if (this.settings.incognitoEnable && !e.shiftKey && !e.ctrlKey) {
+            if (this.settings.incognitoEnable && ((this.settings.incognitoInvert && e.shiftKey) || (!this.settings.incognitoInvert && !e.shiftKey)) && !e.ctrlKey) {
                 if (this.settings.incognitoChrome) {
                     require("child_process").exec(`start chrome -incognito ${e.target.href}`);
                     e.preventDefault();
