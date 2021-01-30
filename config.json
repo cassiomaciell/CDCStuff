@@ -6,6 +6,6 @@
     "description":"hm",
     "authorLink":"https://twitter.com/MrCassioMaciel",
     "page": "https://github.com/cassiomaciell/BetterDiscordAddons",
-    "raw": "http://127.0.0.1:8080/CDCStuff.plugin.js",
-    "!raw": "https://raw.githubusercontent.com/cassiomaciell/BetterDiscordAddons/main/CDCStuff.plugin.js"
+    "raw-dev": "http://127.0.0.1:8080/CDCStuff.plugin.js",
+    "raw": "https://raw.githubusercontent.com/cassiomaciell/BetterDiscordAddons/main/CDCStuff.plugin.js"
 }
