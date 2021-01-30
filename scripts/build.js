@@ -13,16 +13,15 @@ build = build.split("__PLUGIN_VERSION__").join(config.version);
 build = build.split("__PLUGIN_AUTHORID__").join(config.authorId);
 build = build.split("__PLUGIN_AUTHORLINK__").join(config.authorLink);
 build = build.split("__PLUGIN_PAGE__").join(config.page);
-build = build.split("__PLUGIN_RAW__").join(config.raw);
-
+build = build.split("__PLUGIN_RAW__").join(process.env.NODE_ENV.slice(0, -1) == "dev" ? config["raw-dev"] : config.raw);
 const pluginInfo = {
-    version: config.version
-}
+    version: config.version,
+};
 
 build = build.split("__PLUGIN_INFO__").join(`${Buffer.from(JSON.stringify(pluginInfo)).toString("base64")}`);
 
-if(!fs.existsSync(path.join(__dirname, `../build`))){
-    fs.mkdirSync(path.join(__dirname, `../build`))
+if (!fs.existsSync(path.join(__dirname, `../build`))) {
+    fs.mkdirSync(path.join(__dirname, `../build`));
 }
 
-fs.writeFileSync(path.join(__dirname, `../build/${package.main}`), build)
+fs.writeFileSync(path.join(__dirname, `../build/${package.main}`), build);
