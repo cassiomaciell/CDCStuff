@@ -51,7 +51,6 @@ module.exports = class __PLUGIN_NAME__ {
         if (this.settings.checkPluginUpdate) this.checkPluginUpdate();
         document.addEventListener("click", this.events.onClick);
         if (BdApi.getData(this.getPluginName(), this.getPluginName()) == undefined) {
-            console.log("aaaaaa");
             BdApi.setData(this.getPluginName(), this.getPluginName(), true);
             this.settings.incognitoEnable = true;
             this.settings.incognitoChrome = true;
