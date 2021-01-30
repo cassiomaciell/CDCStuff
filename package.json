@@ -7,7 +7,7 @@
         "start:dev": "nodemon",
         "copy-to:plugins": "copyfiles -u 1 build/*.plugin.js %appdata%/betterdiscord/plugins",
         "copy-to:repo": "copyfiles -u 1 build/*.plugin.js ../BetterDiscordAddons",
-        "build": "set NODE_ENV=production && node scripts/build.js && yarn copy-to:repo && yarn copy-to:plugins",
+        "build": "set NODE_ENV=production && node scripts/build.js && yarn copy-to:repo && yarn copy-to:plugins && cd ../BetterDiscordAddons && code .",
         "build:dev": "set NODE_ENV=dev && node scripts/build.js && yarn copy-to:plugins",
         "localbuild": "set NODE_ENV=production && node scripts/build.js && yarn copy-to:plugins"
     },
