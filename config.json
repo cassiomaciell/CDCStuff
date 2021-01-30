@@ -1,0 +1,11 @@
+{
+    "name": "CDCStuff",
+    "version": "1.0.0",
+    "author":"! !Cássio Maciel#6368",
+    "authorId":"316465442275196930",
+    "description":"hm",
+    "authorLink":"https://twitter.com/MrCassioMaciel",
+    "page": "https://github.com/cassiomaciell/BetterDiscordAddons",
+    "raw": "http://127.0.0.1:8080/CDCStuff.plugin.js",
+    "!raw": "https://raw.githubusercontent.com/cassiomaciell/BetterDiscordAddons/main/CDCStuff.plugin.js"
+}

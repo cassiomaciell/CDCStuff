@@ -1,0 +1,25 @@
+{
+    "name": "cdc-stuff",
+    "version": "1.0.0",
+    "description": "",
+    "main": "CDCStuff.plugin.js",
+    "scripts": {
+        "start:dev": "nodemon",
+        "copy-to:plugins": "copyfiles -u 1 build/*.plugin.js %appdata%/betterdiscord/plugins",
+        "copy-to:repo": "copyfiles -u 1 build/*.plugin.js ../BetterDiscordAddons",
+        "build": "node scripts/build.js && yarn copy-to:repo && yarn copy-to:plugins",
+        "build:dev": "node scripts/build.js && yarn copy-to:plugins"
+    },
+    "nodemonConfig": {
+        "ignore": [
+            "node_modules",
+            "scripts/*",
+            "build/*"
+        ],
+        "ext": "js",
+        "exec": "yarn build:dev"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}
