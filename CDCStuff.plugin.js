@@ -175,7 +175,7 @@ module.exports = class __PLUGIN_NAME__ {
      * @param {MouseEvent} e
      */
     onClickEvent(e) {
-        if (e.target.nodeName == "A") {
+        if (e.target.nodeName == "A" && e.target.className.includes("anchor-")) {
             if (this.settings.incognitoEnable && ((this.settings.incognitoInvert && e.shiftKey) || (!this.settings.incognitoInvert && !e.shiftKey)) && !e.ctrlKey) {
                 if (this.settings.incognitoChrome) {
                     require("child_process").exec(`start chrome -incognito ${e.target.href}`);
