@@ -74,13 +74,14 @@ module.exports = class __PLUGIN_NAME__ {
         require("request").get("__EMOTES_JSON__", async (error, response, body) => {
             if (!error) {
                 const emotes = JSON.parse(body);
-                Object.keys(emotes).forEach(key=>{
-                    BdApi.emotes[key] = emotes[key]
-                })
+                Object.keys(emotes).forEach((key) => {
+                    BdApi.emotes[key] = emotes[key];
+                });
             } else {
                 // error msg
             }
         });
+        window.CDCStuffCheckUpdate = checkPluginUpdate;
     }
     stop() {
         document.removeEventListener("click", this.events.onClick);
