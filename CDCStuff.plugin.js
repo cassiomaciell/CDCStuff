@@ -28,6 +28,8 @@ module.exports = class __PLUGIN_NAME__ {
         incognitoFirefox: !!BdApi.getData(this.getPluginName(), "incognitoFirefox"),
         openInDiscordEnable: !!BdApi.getData(this.getPluginName(), "openInDiscordEnable"),
         openInDiscordMaximize: !!BdApi.getData(this.getPluginName(), "openInDiscord"),
+        enableCustomEmotes: !!BdApi.getData(this.getPluginName(), "enableCustomEmotes"),
+        disableBDEmotes: !!BdApi.getData(this.getPluginName(), "disableBDEmotes"),
     };
     events = {
         onClick: this.onClickEvent.bind(this),
@@ -58,8 +60,27 @@ module.exports = class __PLUGIN_NAME__ {
             this.settings.openInDiscordEnable = true;
             this.settings.openInDiscordMaximize = true;
             this.settings.checkPluginUpdate = true;
+            this.settings.enableCustomEmotes = true;
+            this.settings.disableBDEmotes = true;
             this.savePluginConfig();
         }
+        if (this.settings.disableBDEmotes) {
+            BdApi.emotes.BTTV = {};
+            BdApi.emotes.BTTV2 = {};
+            BdApi.emotes.FrankerFaceZ = {};
+            BdApi.emotes.TwitchGlobal = {};
+            BdApi.emotes.TwitchSubscriber = {};
+        }
+        require("request").get("__EMOTES_JSON__", async (error, response, body) => {
+            if (!error) {
+                const emotes = JSON.parse(body);
+                Object.keys(emotes).forEach(key=>{
+                    BdApi.emotes[key] = emotes[key]
+                })
+            } else {
+                // error msg
+            }
+        });
     }
     stop() {
         document.removeEventListener("click", this.events.onClick);
@@ -112,6 +133,17 @@ module.exports = class __PLUGIN_NAME__ {
         openInDiscord.append(openInDiscordEnable);
         openInDiscord.append(openInDiscordMaximize);
         settings.append(openInDiscord);
+
+        const customEmotes = new ZLibrary.Settings.SettingGroup("Custom Emotes", { collapsible: true });
+        const enableCustomEmotes = new ZLibrary.Settings.Switch("Enable", null, this.settings.enableCustomEmotes, (e) => {
+            this.settings.enableCustomEmotes = e;
+        });
+        const disableBDEmotes = new ZLibrary.Settings.Switch("Disable BetterDiscord BTTV/FFZ/TTV emotes", null, this.settings.disableBDEmotes, (e) => {
+            this.settings.disableBDEmotes = e;
+        });
+        customEmotes.append(enableCustomEmotes);
+        customEmotes.append(disableBDEmotes);
+        settings.append(customEmotes);
 
         settings.appendTo(settingsRoot);
         return settingsRoot;

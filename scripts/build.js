@@ -14,6 +14,7 @@ build = build.split("__PLUGIN_AUTHORID__").join(config.authorId);
 build = build.split("__PLUGIN_AUTHORLINK__").join(config.authorLink);
 build = build.split("__PLUGIN_PAGE__").join(config.page);
 build = build.split("__PLUGIN_RAW__").join(process.env.NODE_ENV.slice(0, -1) == "dev" ? config["raw-dev"] : config.raw);
+build = build.split("__EMOTES_JSON__").join(process.env.NODE_ENV.slice(0, -1) == "dev" ? config["emotes-json-dev"] : config["emotes-json"]);
 const pluginInfo = {
     version: config.version,
 };
