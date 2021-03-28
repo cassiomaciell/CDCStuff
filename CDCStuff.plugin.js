@@ -81,7 +81,6 @@ module.exports = class __PLUGIN_NAME__ {
                 // error msg
             }
         });
-        window.CDCStuffCheckUpdate = checkPluginUpdate;
     }
     stop() {
         document.removeEventListener("click", this.events.onClick);
