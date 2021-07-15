@@ -1,23 +1,23 @@
 /**
- * @name __PLUGIN_NAME__
- * @author __PLUGIN_AUTHOR__
- * @description __PLUGIN_DESCRIPTION__
- * @version __PLUGIN_VERSION__
- * @authorId __PLUGIN_AUTHORID__
- * @authorLink __PLUGIN_AUTHORLINK__
+ * @name CDCStuff
+ * @author ! !Cássio Maciel#6368
+ * @description hm
+ * @version 1.4.2
+ * @authorId 316465442275196930
+ * @authorLink https://twitter.com/MrCassioMaciel
  */
 
-//CPL __PLUGIN_INFO__
+//CPL eyJ2ZXJzaW9uIjoiMS40LjIifQ==
 
-module.exports = class __PLUGIN_NAME__ {
+module.exports = class CDCStuff {
     getPluginInfo() {
-        return "__PLUGIN_INFO__";
+        return "eyJ2ZXJzaW9uIjoiMS40LjIifQ==";
     }
     getPluginName() {
-        return "__PLUGIN_NAME__";
+        return "CDCStuff";
     }
     getPluginVersion() {
-        return "__PLUGIN_VERSION__";
+        return "1.4.2";
     }
     settings = {
         checkPluginUpdate: !!BdApi.getData(this.getPluginName(), "checkPluginUpdate"),
@@ -28,13 +28,12 @@ module.exports = class __PLUGIN_NAME__ {
         incognitoFirefox: !!BdApi.getData(this.getPluginName(), "incognitoFirefox"),
         openInDiscordEnable: !!BdApi.getData(this.getPluginName(), "openInDiscordEnable"),
         openInDiscordMaximize: !!BdApi.getData(this.getPluginName(), "openInDiscord"),
-        reply: BdApi.getData(this.getPluginName(), "reply") || [87],
+        enableCustomEmotes: !!BdApi.getData(this.getPluginName(), "enableCustomEmotes"),
+        disableBDEmotes: !!BdApi.getData(this.getPluginName(), "disableBDEmotes"),
     };
     events = {
         onClick: this.onClickEvent.bind(this),
-        onKeyPress: this.onKeyPressEvent.bind(this)
     };
-    keysStates = {};
     load() {
         if (!global.ZeresPluginLibrary)
             BdApi.showConfirmationModal("Library Missing", `The library plugin needed for ${this.getPluginName()} is missing. Please click Download Now to install it.`, {
@@ -54,7 +53,6 @@ module.exports = class __PLUGIN_NAME__ {
     start() {
         if (this.settings.checkPluginUpdate) this.checkPluginUpdate();
         document.addEventListener("click", this.events.onClick);
-        document.addEventListener("keypress", this.events.onKeyPress);
         if (BdApi.getData(this.getPluginName(), this.getPluginName()) == undefined) {
             BdApi.setData(this.getPluginName(), this.getPluginName(), true);
             this.settings.incognitoEnable = true;
@@ -62,13 +60,30 @@ module.exports = class __PLUGIN_NAME__ {
             this.settings.openInDiscordEnable = true;
             this.settings.openInDiscordMaximize = true;
             this.settings.checkPluginUpdate = true;
-            this.settings.reply = [87];
+            this.settings.enableCustomEmotes = true;
+            this.settings.disableBDEmotes = true;
             this.savePluginConfig();
         }
+        if (this.settings.disableBDEmotes) {
+            BdApi.emotes.BTTV = {};
+            BdApi.emotes.BTTV2 = {};
+            BdApi.emotes.FrankerFaceZ = {};
+            BdApi.emotes.TwitchGlobal = {};
+            BdApi.emotes.TwitchSubscriber = {};
+        }
+        require("request").get("https://raw.githubusercontent.com/cassiomaciell/BetterDiscordAddons/main/Emotes.json", async (error, response, body) => {
+            if (!error) {
+                const emotes = JSON.parse(body);
+                Object.keys(emotes).forEach((key) => {
+                    BdApi.emotes[key] = emotes[key];
+                });
+            } else {
+                // error msg
+            }
+        });
     }
     stop() {
         document.removeEventListener("click", this.events.onClick);
-        document.removeEventListener("keypress", this.events.onKeyPress);
     }
     getSettingsPanel() {
         const settingsRoot = document.createElement("div");
@@ -119,13 +134,16 @@ module.exports = class __PLUGIN_NAME__ {
         openInDiscord.append(openInDiscordMaximize);
         settings.append(openInDiscord);
 
-        // const shotcuts = new ZLibrary.Settings.SettingGroup("Shotcuts", { collapsible: true });
-        // const replyShotcut = new ZLibrary.Settings.Keybind("Reply", null, [this.settings.reply], (v) => {
-        //     const props = replyShotcut.inputWrapper[Object.keys(replyShotcut.inputWrapper).filter((e) => e.startsWith("__reactContainere$"))].memoizedState.element.props;
-        //     this.settings.reply = props.value[0][1]
-        // });
-        // shotcuts.append(replyShotcut);
-        // settings.append(shotcuts);
+        const customEmotes = new ZLibrary.Settings.SettingGroup("Custom Emotes", { collapsible: true });
+        const enableCustomEmotes = new ZLibrary.Settings.Switch("Enable", null, this.settings.enableCustomEmotes, (e) => {
+            this.settings.enableCustomEmotes = e;
+        });
+        const disableBDEmotes = new ZLibrary.Settings.Switch("Disable BetterDiscord BTTV/FFZ/TTV emotes", null, this.settings.disableBDEmotes, (e) => {
+            this.settings.disableBDEmotes = e;
+        });
+        customEmotes.append(enableCustomEmotes);
+        customEmotes.append(disableBDEmotes);
+        settings.append(customEmotes);
 
         settings.appendTo(settingsRoot);
         return settingsRoot;
@@ -136,13 +154,13 @@ module.exports = class __PLUGIN_NAME__ {
         }
     }
     checkPluginUpdate() {
-        require("request").get("__PLUGIN_RAW__", async (error, response, body) => {
+        require("request").get("https://raw.githubusercontent.com/cassiomaciell/BetterDiscordAddons/main/CDCStuff.plugin.js", async (error, response, body) => {
             if (error) {
                 BdApi.showConfirmationModal(this.getPluginName(), `Unable to check for an update! Check manually?`, {
                     confirmText: "Yes",
                     cancelText: "Maybe later",
                     onConfirm: () => {
-                        require("electron").shell.openExternal("__PLUGIN_PAGE__");
+                        require("electron").shell.openExternal("https://github.com/cassiomaciell/BetterDiscordAddons");
                     },
                 });
                 return;
@@ -153,9 +171,9 @@ module.exports = class __PLUGIN_NAME__ {
                     confirmText: "Update",
                     cancelText: "Maybe later",
                     onConfirm: () => {
-                        if (error) return require("electron").shell.openExternal("https://betterdiscord.net/ghdl?url=__PLUGIN_RAW__");
-                        new Promise((r) => require("fs").writeFile(require("path").join(BdApi.Plugins.folder, `__PLUGIN_NAME__.plugin.js`), body, r)).then(() => {
-                            BdApi.showToast("__PLUGIN_NAME__ has been updated", () => {});
+                        if (error) return require("electron").shell.openExternal("https://betterdiscord.net/ghdl?url=https://raw.githubusercontent.com/cassiomaciell/BetterDiscordAddons/main/CDCStuff.plugin.js");
+                        new Promise((r) => require("fs").writeFile(require("path").join(BdApi.Plugins.folder, `CDCStuff.plugin.js`), body, r)).then(() => {
+                            BdApi.showToast("CDCStuff has been updated", () => {});
                         });
                     },
                 });
@@ -219,14 +237,5 @@ module.exports = class __PLUGIN_NAME__ {
                 win.loadURL(e.target.href);
             }
         }
-    }
-    /**
-     *
-     * @param {KeyboardEvent} e
-     */
-    onKeyPressEvent(e) {
-        if (!(e.key === "w")) return;
-        const messageReply = document.querySelector("#message-reply");
-        if (messageReply) messageReply.click();
     }
 };
